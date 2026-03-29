@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from telethon import TelegramClient, events, Button
+from telethon import TelegramClient, events
 from telethon.sessions import StringSession
 from telethon.tl.functions.messages import ImportChatInviteRequest
 from telethon.errors import UserAlreadyParticipantError
@@ -18,6 +18,7 @@ SESSION_STRING  = "1ApWapzMBuzJDA1QeuteePvKYxu8m5vRzb4v5RqRhey46V-RywtGTdoO6aVWW
 CANAL_ORIGEM    = "reicassinodados"
 INVITE_HASH     = "1T99mXFDpDFiMzgy"
 LINK_PLATAFORMA = "https://bantubet.co.ao/affiliates/?btag=2442098"
+RODAPE          = f"\n\n🎰 Joga aqui → {LINK_PLATAFORMA}"
 
 async def main():
     logger.info("🚀 Robô BacBo Bilionário VIP — A FUNCIONAR!")
@@ -44,7 +45,7 @@ async def main():
         logger.error(f"❌ Erro ao entrar no grupo: {e}")
 
     if not grupo:
-        logger.error("❌ Grupo não encontrado! A listar diálogos...")
+        logger.error("❌ Grupo não encontrado!")
         async for dialog in client.iter_dialogs():
             logger.info(f"   {dialog.name} | ID: {dialog.id}")
         return
@@ -53,21 +54,36 @@ async def main():
     logger.info(f"✅ Canal: {canal.title} | Grupo: {grupo.title}")
     logger.info("👀 A monitorizar... aguardando sinais!")
 
-    botao = [Button.url("🎰 Clique aqui para jogar ↗️", LINK_PLATAFORMA)]
-
     @client.on(events.NewMessage(chats=canal))
     async def handler(event):
         msg = event.message
         logger.info("📨 Novo sinal recebido!")
         try:
+            texto = (msg.text or "") + RODAPE
+
             if msg.photo:
-                await client.send_file(grupo, msg.media, caption=msg.text or "", buttons=botao)
+                await client.send_file(
+                    grupo,
+                    msg.media,
+                    caption=texto,
+                    link_preview=False
+                )
             elif msg.video:
-                await client.send_file(grupo, msg.media, caption=msg.text or "", buttons=botao)
+                await client.send_file(
+                    grupo,
+                    msg.media,
+                    caption=texto,
+                    link_preview=False
+                )
             elif msg.text:
-                await client.send_message(grupo, msg.text, buttons=botao)
+                await client.send_message(
+                    grupo,
+                    texto,
+                    link_preview=False
+                )
             else:
                 await client.forward_messages(grupo, msg)
+
             logger.info("✅ Sinal enviado com sucesso!")
         except Exception as e:
             logger.error(f"❌ Erro ao enviar: {e}")
