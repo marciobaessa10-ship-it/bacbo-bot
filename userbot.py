@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 API_ID          = 31922041
 API_HASH        = "3f1efb25a51933118b55a0669c593365"
-SESSION_STRING  = "1ApWapzMBuz5W-1MWhcua12AqLKIjYMghH7tuEYOq7IP6NlPXHQtkpKU1BG-l703F2OhdR_YM_zdJWf36OsZStykLepAtUMTxVGovIysT5CCPwMds2W5N7c75sszbFbVP9_NhzDaEgFltxK5P4TlvIeH4pWW3O5iClOnqvxg4gJG9lgEmIdzndCmNpXRxgcS7znzfEM39e46TO7r7__lQTNrltEU9EdKvhmB5g09s4752LY_pC82_5wGSZ6hhGZwKivrmIvvWTzpzS00YY8OqMCemVTuWeK5-Duu05QnZiGz-z_40OQJwmXiGO16X_2PwC-hlZApJI5F6ma_ghXRRvz0Dv91kxTg="
+SESSION_STRING  = "1ApWapzMBuxZ9swgkHNG75q6RLrjxuvzi6lng6KBSimY10xouFhJmvDGg6zV_Gx0prLL33yAawZk2hH4-zHWLpI1BnMQH4pOinvL8ZrpTIyO5hzhw4mygukLZYDDG0ExhO5PcrUnPQDP9go-mPKESjW4_IF4n2cM-1s9gB8ZVPN6fcztWpJO4X97CHKpASuHpzsqlh5CWuem1b7z5Nv2b8cG6WqEvjz7q-1IX-i56kHAVVVe7zatSP4O2QRFllkPfAiQonGuHxns0mdpJLVc8osj7EtH2dYgEM-dAhMDrHsui7Hb7kVumA9llSmJDFzR4qNSeTnODfjV5eeoQGDWX812MDF9eS1M="
 CANAL_ORIGEM    = "reicassinodados"
 INVITE_HASH     = "1T99mXFDpDFiMzgy"
 LINK_PLATAFORMA = "https://bantubet.co.ao/affiliates/?btag=2442098"
@@ -28,7 +28,6 @@ async def main():
     await client.start()
     logger.info("✅ Userbot conectado!")
 
-    # Entrar no grupo VIP
     grupo = None
     try:
         result = await client(ImportChatInviteRequest(INVITE_HASH))
