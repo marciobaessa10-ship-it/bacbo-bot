@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import re
 from telethon import TelegramClient, events
 from telethon.sessions import StringSession
 from telethon.tl.functions.messages import ImportChatInviteRequest
@@ -19,36 +18,12 @@ SESSION_STRING  = "1ApWapzMBuzJDA1QeuteePvKYxu8m5vRzb4v5RqRhey46V-RywtGTdoO6aVWW
 CANAL_ORIGEM    = "reicassinodados"
 INVITE_HASH     = "1T99mXFDpDFiMzgy"
 LINK_PLATAFORMA = "https://bantubet.co.ao/affiliates/?btag=2442098"
+RODAPE          = f"\n\n🎰 Joga aqui → {LINK_PLATAFORMA}"
 
-# ─── PLACAR DE ASSERTIVIDADE ─────────────────────────────────────────────────
-greens = 0
-reds   = 0
-
-def detectar_resultado(texto: str):
-    """Detecta se a mensagem é WIN ou LOSS."""
-    t = texto.upper()
-    if any(w in t for w in ["✅", "GREEN", "WIN", "VITÓRIA", "ACERTOU", "GANHOU", "BATEU"]):
-        return "green"
-    if any(w in t for w in ["❌", "RED", "LOSS", "PERDEU", "FALHOU", "GALE"]):
-        return "red"
-    return None
-
-def placar_texto():
-    total = greens + reds
-    taxa  = round((greens / total) * 100) if total > 0 else 100
-    return (
-        f"━━━━━━━━━━━━━━━━━━━━━\n"
-        f"📊 Placar: ✅ {greens} Greens  ❌ {reds} Reds\n"
-        f"🎯 Assertividade: {taxa}%\n"
-        f"━━━━━━━━━━━━━━━━━━━━━"
-    )
-
-def rodape():
-    return f"\n\n{placar_texto()}\n\n🎰 Joga aqui → {LINK_PLATAFORMA}"
+def limpar_texto(texto: str) -> str:
+    return texto.replace("OTAN", "BacBo Bilionário VIP 🚀").replace("Otan", "BacBo Bilionário VIP 🚀").replace("otan", "BacBo Bilionário VIP 🚀")
 
 async def main():
-    global greens, reds
-
     logger.info("🚀 Robô BacBo Bilionário VIP — A FUNCIONAR!")
     logger.info(f"📡 A monitorizar : @{CANAL_ORIGEM}")
     logger.info("━" * 50)
@@ -83,23 +58,12 @@ async def main():
 
     @client.on(events.NewMessage(chats=canal))
     async def handler(event):
-        global greens, reds
         msg  = event.message
-        text = msg.text or ""
+        text = limpar_texto(msg.text or "")
+        texto_final = text + RODAPE
 
-        # Actualiza placar se for resultado
-        resultado = detectar_resultado(text)
-        if resultado == "green":
-            greens += 1
-            logger.info(f"✅ GREEN detectado! Placar: {greens}G {reds}R")
-        elif resultado == "red":
-            reds += 1
-            logger.info(f"❌ RED detectado! Placar: {greens}G {reds}R")
-
-        logger.info("📨 Novo sinal recebido!")
+        logger.info("📨 Sinal recebido! A enviar...")
         try:
-            texto_final = text + rodape()
-
             if msg.photo:
                 await client.send_file(grupo, msg.media, caption=texto_final, link_preview=False)
             elif msg.video:
@@ -108,10 +72,9 @@ async def main():
                 await client.send_message(grupo, texto_final, link_preview=False)
             else:
                 await client.forward_messages(grupo, msg)
-
-            logger.info("✅ Sinal enviado com sucesso!")
+            logger.info("✅ Enviado com sucesso!")
         except Exception as e:
-            logger.error(f"❌ Erro ao enviar: {e}")
+            logger.error(f"❌ Erro: {e}")
 
     await client.run_until_disconnected()
 
