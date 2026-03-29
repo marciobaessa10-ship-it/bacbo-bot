@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 API_ID          = 31922041
 API_HASH        = "3f1efb25a51933118b55a0669c593365"
-SESSION_STRING  = "1ApWapzMBuxZ9swgkHNG75q6RLrjxuvzi6lng6KBSimY10xouFhJmvDGg6zV_Gx0prLL33yAawZk2hH4-zHWLpI1BnMQH4pOinvL8ZrpTIyO5hzhw4mygukLZYDDG0ExhO5PcrUnPQDP9go-mPKESjW4_IF4n2cM-1s9gB8ZVPN6fcztWpJO4X97CHKpASuHpzsqlh5CWuem1b7z5Nv2b8cG6WqEvjz7q-1IX-i56kHAVVVe7zatSP4O2QRFllkPfAiQonGuHxns0mdpJLVc8osj7EtH2dYgEM-dAhMDrHsui7Hb7kVumA9llSmJDFzR4qNSeTnODfjV5eeoQGDWX812MDF9eS1M="
+SESSION_STRING  = "1ApWapzMBuzJDA1QeuteePvKYxu8m5vRzb4v5RqRhey46V-RywtGTdoO6aVWWD34klG0P5JvCIMkb1VJE5MbXI1IRS_CBHBDnNP_66xFeKdjYEKzP0r7OUgMP_W-9c7TEyWGH42mLLQBCCf8r7BSGGRjMCa7o13WCC_m5ukZAJFhX53L_VVzDGZHoB81f365oEqPeNESOaqCSaRifvje64FkRJBEsV7JhLE-qsW9EvJTvu7pVujpEzRZEgpmmYs_1XJg9ObgDcREIG-UdXUbjdSFdvMZ7FZ0kfT571vblCl7q3FyPAHSg3CmNltkOARp-3dmm85KxzDWynYCOGQx7Hb9vu50iZ3g="
 CANAL_ORIGEM    = "reicassinodados"
 INVITE_HASH     = "1T99mXFDpDFiMzgy"
 LINK_PLATAFORMA = "https://bantubet.co.ao/affiliates/?btag=2442098"
@@ -36,7 +36,7 @@ async def main():
     except UserAlreadyParticipantError:
         logger.info("✅ Já está no grupo VIP!")
         async for dialog in client.iter_dialogs():
-            if dialog.id == -1001087968824 or "BacBo" in (dialog.name or "") or "Bilion" in (dialog.name or ""):
+            if "BacBo" in (dialog.name or "") or "Bilion" in (dialog.name or ""):
                 grupo = dialog.entity
                 logger.info(f"✅ Grupo encontrado: {dialog.name}")
                 break
@@ -44,20 +44,21 @@ async def main():
         logger.error(f"❌ Erro ao entrar no grupo: {e}")
 
     if not grupo:
-        logger.error("❌ Não conseguiu encontrar o grupo! A listar diálogos...")
+        logger.error("❌ Grupo não encontrado! A listar diálogos...")
         async for dialog in client.iter_dialogs():
-            logger.info(f"   Diálogo: {dialog.name} | ID: {dialog.id}")
+            logger.info(f"   {dialog.name} | ID: {dialog.id}")
         return
 
     canal = await client.get_entity(CANAL_ORIGEM)
     logger.info(f"✅ Canal: {canal.title} | Grupo: {grupo.title}")
+    logger.info("👀 A monitorizar... aguardando sinais!")
 
     botao = [Button.url("🎰 Clique aqui para jogar ↗️", LINK_PLATAFORMA)]
 
     @client.on(events.NewMessage(chats=canal))
     async def handler(event):
         msg = event.message
-        logger.info("📨 Novo sinal recebido! A enviar para o grupo...")
+        logger.info("📨 Novo sinal recebido!")
         try:
             if msg.photo:
                 await client.send_file(grupo, msg.media, caption=msg.text or "", buttons=botao)
@@ -71,7 +72,6 @@ async def main():
         except Exception as e:
             logger.error(f"❌ Erro ao enviar: {e}")
 
-    logger.info("👀 A monitorizar... aguardando sinais!")
     await client.run_until_disconnected()
 
 if __name__ == "__main__":
