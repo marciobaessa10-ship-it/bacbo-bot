@@ -36,7 +36,6 @@ async def main():
         logger.info(f"✅ Entrou no grupo: {grupo.title}")
     except UserAlreadyParticipantError:
         logger.info("✅ Já está no grupo VIP!")
-        # Procura o grupo na lista de diálogos
         async for dialog in client.iter_dialogs():
             if dialog.id == -1001087968824 or "BacBo" in (dialog.name or "") or "Bilion" in (dialog.name or ""):
                 grupo = dialog.entity
@@ -46,12 +45,11 @@ async def main():
         logger.error(f"❌ Erro ao entrar no grupo: {e}")
 
     if not grupo:
-        logger.error("❌ Não conseguiu encontrar o grupo! A verificar diálogos...")
+        logger.error("❌ Não conseguiu encontrar o grupo! A listar diálogos...")
         async for dialog in client.iter_dialogs():
             logger.info(f"   Diálogo: {dialog.name} | ID: {dialog.id}")
         return
 
-    # Canal de origem
     canal = await client.get_entity(CANAL_ORIGEM)
     logger.info(f"✅ Canal: {canal.title} | Grupo: {grupo.title}")
 
